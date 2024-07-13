@@ -7,13 +7,13 @@ export default function CoinInfoModal({ coin }) {
         <img
           src={coin.icon}
           alt={coin.name}
-          style={{ width: "40", marginRight: "10" }}
+          style={{ width: "40", marginRight: 10 }}
         />
-        <Typography level={2} style={{ margin: "0" }}>
+        <Typography.Title level={2} style={{ margin: 0 }}>
           {coin.symbol} {coin.name}
-        </Typography>
+        </Typography.Title>
       </Flex>
-      {/* <Divider /> */}
+      <Divider />
       <Typography.Paragraph>
         <Typography.Text strong>1 hour: </Typography.Text>
         <Tag color={coin.priceChange1h > 0 ? "green" : "red"}>
