@@ -1,10 +1,48 @@
-import { Select, Space, Typography, Flex, Divider, Form, Input } from "antd";
+import {
+  Select,
+  Space,
+  Typography,
+  Flex,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  Button,
+  DatePicker,
+  Result,
+} from "antd";
 import { useState } from "react";
 import { useCrypto } from "../context/crypto-context";
+import { useForm } from "antd/es/form/Form";
 
-export default function AddAssetForm() {
+const validateMessages = {
+  required: "${label} is required",
+  types: {
+    number: "${label} is not valid number",
+  },
+  number: {
+    range: "${label} must be between ${min} and ${max}",
+  },
+};
+
+export default function AddAssetForm({ onClose }) {
+  const [form] = Form.useForm();
   const { crypto } = useCrypto();
   const [coin, setCoin] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
+
+  if (submitted) {
+    <Result
+      status="success"
+      title="New Asset Added"
+      subTitle={`Added ${42} of ${coin.name} by price ${24}`}
+      extra={[
+        <Button type="primary" key="console" onClick={onClose}>
+          Close
+        </Button>,
+      ]}
+    />;
+  }
 
   if (!coin) {
     return (
@@ -33,10 +71,25 @@ export default function AddAssetForm() {
 
   function onFinish(values) {
     console.log("finish", values);
+    setSubmitted(true);
   }
 
+  function handleAmountChange(value) {
+    const price = form.getFieldValue("price");
+    form.setFieldsValue({
+      total: +(value * price.toFixed(2)),
+    });
+  }
+
+  function handlePriceChange(value) {
+    const amount = form.getFieldValue("amount");
+    form.setFieldsValue({
+      total: +(amount * value).toFixed(2),
+    });
+  }
   return (
     <Form
+      form={form}
       name="basic"
       labelCol={{
         span: 4,
@@ -47,8 +100,11 @@ export default function AddAssetForm() {
       style={{
         maxWidth: 600,
       }}
-      initialValues={{}}
+      initialValues={{
+        price: +coin.price.toFixed(2),
+      }}
       onFinish={onFinish}
+      validateMessages={validateMessages}
     >
       <Flex align="center">
         <img
@@ -69,46 +125,31 @@ export default function AddAssetForm() {
           {
             required: true,
             type: "number",
-            min: 10,
-            message: "Please input your username!",
+            min: 0,
           },
         ]}
       >
-        <Input />
+        <InputNumber
+          placeholder="Enter coin amount"
+          onChange={handleAmountChange}
+          style={{ width: "100%" }}
+        />
       </Form.Item>
 
-      <Form.Item
-        label="Password"
-        name="password"
-        rules={[
-          {
-            required: true,
-            message: "Please input your password!",
-          },
-        ]}
-      >
-        <Input.Password />
+      <Form.Item label="Price" name="price">
+        <InputNumber onChange={handlePriceChange} style={{ width: "100%" }} />
+      </Form.Item>
+      <Form.Item label="Date & time" name="date">
+        <DatePicker showTime />
       </Form.Item>
 
-      <Form.Item
-        name="remember"
-        valuePropName="checked"
-        wrapperCol={{
-          offset: 8,
-          span: 16,
-        }}
-      >
-        <Checkbox>Remember me</Checkbox>
+      <Form.Item label="Total" name="total">
+        <InputNumber disabled style={{ width: "100%" }} />
       </Form.Item>
 
-      <Form.Item
-        wrapperCol={{
-          offset: 8,
-          span: 16,
-        }}
-      >
+      <Form.Item>
         <Button type="primary" htmlType="submit">
-          Submit
+          Add Asset
         </Button>
       </Form.Item>
     </Form>
