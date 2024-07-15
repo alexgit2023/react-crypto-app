@@ -7,13 +7,6 @@ import CryptoContext from "../../context/crypto-context";
 const siderStyle = {
   padding: "1rem",
 };
-const data = [
-  "Racing car sprays burning fuel into crowd.",
-  "Japanese princess to wed commoner.",
-  "Australian walks 100km after outback crash.",
-  "Man charged over missing wedding girl.",
-  "Los Angeles battles huge wildfires.",
-];
 
 export default function AppSider() {
   const { assets } = useContext(CryptoContext);
@@ -35,7 +28,7 @@ export default function AppSider() {
             dataSource={[
               {
                 title: "Total Profit",
-                value: asset.totalProffit,
+                value: asset.totalProfit,
                 withTag: true,
               },
               { title: "Asset Amount", value: asset.amount, isPlain: true },
@@ -50,10 +43,10 @@ export default function AppSider() {
                       {asset.growPercent}%
                     </Tag>
                   )}
-                  {item.isPlain && item.value.toFixed(2)}
+                  {item.isPlain && item.value}
                   {!item.isPlain && (
-                    <Typography.Text type={asset.grow ? "succes" : "danger"}>
-                      {item.value.toFixed(2)}${" "}
+                    <Typography.Text type={asset.grow ? "success" : "danger"}>
+                      {item.value.toFixed(2)}$
                     </Typography.Text>
                   )}
                 </span>
